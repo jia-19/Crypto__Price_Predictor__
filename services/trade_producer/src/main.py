@@ -1,6 +1,7 @@
 # Create an Application instance with Kafka configs
 from quixstreams import Application
 from typing import List, Dict
+from loguru import logger
 
 from src.kraken_api import KrakenWebsocketAPI
 
@@ -35,6 +36,7 @@ def produce_trades(
 
             # Fetching trades from API
             trades: List[Dict] = kraken_api.get_trades()
+            logger.info("Received Kraken API data...")
 
             for trade in trades:
 
@@ -49,10 +51,10 @@ def produce_trades(
                     key=message.key
                 )
 
-                print("Message Sent!")
+                logger.info("Message Sent!")
             from time import sleep
             sleep(1)
 
 if __name__ == "__main__":
-    produce_trades(kafka_broker_address= 'localhost:19092',
+    produce_trades(kafka_broker_address= 'redpanda-0:9092',
                 kafka_topic_name= "trade" )
